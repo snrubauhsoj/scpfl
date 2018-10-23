@@ -122,8 +122,8 @@ def get_scoreboard_short(league, final=False):
         matchups = league.scoreboard()
     else:
         matchups = league.scoreboard(week=pranks_week(league))
-    score = ['%s %.2f - %.2f %s' % (i.home_team.team_abbrev, i.home_score,
-             i.away_score, i.away_team.team_abbrev) for i in matchups
+    score = ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
+             i.away_score, i.away_team.owner) for i in matchups
              if i.away_team]
     text = ['Score Update'] + score
     return '\n'.join(text)
@@ -131,20 +131,28 @@ def get_scoreboard_short(league, final=False):
 def get_scoreboard(league):
     #Gets current week's scoreboard
     matchups = league.scoreboard()
-    score = ['%s %.2f - %.2f %s' % (i.home_team.team_name, i.home_score,
-             i.away_score, i.away_team.team_name) for i in matchups
+    score = ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
+             i.away_score, i.away_team.owner) for i in matchups
              if i.away_team]
     text = ['Score Update'] + score
     return '\n'.join(text)
 
 def get_matchups(league):
     #Gets current week's Matchups
+
+    if league.league_id==81396:
+        league_url = "www.scpfl.weebly.com"
+        league_url = ['Playoff Projections, Facepalm Award Standings, and Player Points Updated: ' + league_url]
+    else:
+        league_url = "www.arkansasdynasty.weebly.com"
+        league_url = ['Playoff Projections, Draft Projections, and Player Points Updated: ' + league_url]
+    
     matchups = league.scoreboard()
 
-    score = ['%s(%s-%s) vs %s(%s-%s)' % (i.home_team.team_name, i.home_team.wins, i.home_team.losses,
-             i.away_team.team_name, i.away_team.wins, i.away_team.losses) for i in matchups
+    score = ['%s(%s-%s) vs %s(%s-%s)' % (i.home_team.owner, i.home_team.wins, i.home_team.losses,
+             i.away_team.owner, i.away_team.wins, i.away_team.losses) for i in matchups
              if i.away_team]
-    text = ['This Week\'s Matchups'] + score + ['\n'] + random_phrase()
+    text = ['This Week\'s Matchups'] + score + ['\n'] + league_url
     return '\n'.join(text)
 
 def get_close_scores(league):
@@ -156,8 +164,8 @@ def get_close_scores(league):
         if i.away_team:
             diffScore = i.away_score - i.home_score
             if -16 < diffScore < 16:
-                score += ['%s %.2f - %.2f %s' % (i.home_team.team_abbrev, i.home_score,
-                        i.away_score, i.away_team.team_abbrev)]
+                score += ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
+                        i.away_score, i.away_team.owner)]
     if not score:
         score = ['None']
     text = ['Close Scores'] + score
@@ -169,7 +177,7 @@ def get_power_rankings(league):
     #It's weighted 80/15/5 respectively
     pranks = league.power_rankings(week=pranks_week(league))
 
-    score = ['%s - %s' % (i[0], i[1].team_name) for i in pranks
+    score = ['%s - %s' % (i[0], i[1].owner) for i in pranks
              if i]
     text = ['This Week\'s Power Rankings'] + score
     return '\n'.join(text)
@@ -191,39 +199,43 @@ def get_trophies(league):
     for i in matchups:
         if i.home_score > high_score:
             high_score = i.home_score
-            high_team_name = i.home_team.team_name
+            high_team_name = i.home_team.owner
         if i.home_score < low_score:
             low_score = i.home_score
-            low_team_name = i.home_team.team_name
+            low_team_name = i.home_team.owner
         if i.away_score > high_score:
             high_score = i.away_score
-            high_team_name = i.away_team.team_name
+            high_team_name = i.away_team.owner
         if i.away_score < low_score:
             low_score = i.away_score
-            low_team_name = i.away_team.team_name
+            low_team_name = i.away_team.owner
         if abs(i.away_score - i.home_score) < closest_score:
             closest_score = abs(i.away_score - i.home_score)
             if i.away_score - i.home_score < 0:
-                close_winner = i.home_team.team_name
-                close_loser = i.away_team.team_name
+                close_winner = i.home_team.owner
+                close_loser = i.away_team.owner
             else:
-                close_winner = i.away_team.team_name
-                close_loser = i.home_team.team_name
+                close_winner = i.away_team.owner
+                close_loser = i.home_team.owner
         if abs(i.away_score - i.home_score) > biggest_blowout:
             biggest_blowout = abs(i.away_score - i.home_score)
             if i.away_score - i.home_score < 0:
-                ownerer_team_name = i.home_team.team_name
-                blown_out_team_name = i.away_team.team_name
+                ownerer_team_name = i.home_team.owner
+                blown_out_team_name = i.away_team.owner
             else:
-                ownerer_team_name = i.away_team.team_name
-                blown_out_team_name = i.home_team.team_name
-
-    low_score_str = ['Low score: %s with %.2f points' % (low_team_name, low_score)]
-    high_score_str = ['High score: %s with %.2f points' % (high_team_name, high_score)]
+                ownerer_team_name = i.away_team.owner
+                blown_out_team_name = i.home_team.owner
+    if league.league_id==81396:
+        low_score_str = ['Biggest Loser of the Week: %s with %.2f points' % (low_team_name, low_score)]
+        high_score_str = ['Super Winner of the Week: %s with %.2f points' % (high_team_name, high_score)]
+    else:
+        low_score_str = ['Junction City Award Winner: %s with %.2f points' % (low_team_name, low_score)]
+        high_score_str = ['Blue Eye Award Winner: %s with %.2f points' % (high_team_name, high_score)]   
+       
     close_score_str = ['%s barely beat %s by a margin of %.2f' % (close_winner, close_loser, closest_score)]
     blowout_str = ['%s blown out by %s by a margin of %.2f' % (blown_out_team_name, ownerer_team_name, biggest_blowout)]
 
-    text = ['Trophies of the week:'] + low_score_str + high_score_str + close_score_str + blowout_str
+    text = ['Trophies of the Week:'] + low_score_str + high_score_str
     return '\n'.join(text)
 
 def bot_main(function):
@@ -253,7 +265,7 @@ def bot_main(function):
     slack_bot = SlackBot(slack_webhook_url)
     discord_bot = DiscordBot(discord_webhook_url)
     league = League(league_id, year)
-
+   
     test = False
     if test:
         print(get_matchups(league))
@@ -351,7 +363,7 @@ if __name__ == '__main__':
     #score update:                       sunday at 1pm, 4pm, 8pm.
 
     sched.add_job(bot_main, 'cron', ['get_power_rankings'], id='power_rankings',
-        day_of_week='tue', hour=11, minute=05, start_date=ff_start_date, end_date=ff_end_date,
+        day_of_week='tue', hour=13, minute=15, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['get_matchups'], id='matchups',
         day_of_week='thu', hour=19, minute=30, start_date=ff_start_date, end_date=ff_end_date,
