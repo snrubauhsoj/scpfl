@@ -140,7 +140,7 @@ def get_scoreboard(league):
 def get_matchups(league):
     #Gets current week's Matchups
 
-    if league.league_id==81396:
+    if int(league.league_id) == 81396:
         league_url = "https://scpfl.weebly.com/current-season.html"
         league_url = ['Playoff Projections, Facepalm Award Standings, and Player Points Updated: ' + league_url]
     else:
