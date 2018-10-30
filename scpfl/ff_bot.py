@@ -142,10 +142,10 @@ def get_matchups(league):
 
     if int(league.league_id) == 81396:
         league_url = "https://scpfl.weebly.com/current-season.html"
-        league_url = ['Playoff Projections, Facepalm Award Standings, and Player Points Updated: ' + league_url]
+        league_url = ['Power Rankings, Playoff Projections, Facepalm Award Standings, and Player Points Updated: ' + league_url]
     else:
         league_url = "https://arkansasdynasty.weebly.com/current-season.html"
-        league_url = ['Playoff Projections, Draft Projections, and Player Points Updated: ' + league_url]
+        league_url = ['Power Rankings, Playoff Projections, Draft Projections, and Player Points Updated: ' + league_url]
     
     matchups = league.scoreboard()
 
@@ -266,7 +266,7 @@ def bot_main(function):
     discord_bot = DiscordBot(discord_webhook_url)
     league = League(league_id, year)
    
-    test = True
+    test = False
     if test:
         print(get_matchups(league))
         print(get_scoreboard(league))
@@ -362,23 +362,23 @@ if __name__ == '__main__':
     #score update:                       friday, monday, and tuesday morning at 7:30am.
     #score update:                       sunday at 1pm, 4pm, 8pm.
 
-    sched.add_job(bot_main, 'cron', ['get_power_rankings'], id='power_rankings',
-        day_of_week='tue', hour=18, minute=30, start_date=ff_start_date, end_date=ff_end_date,
-        timezone=myTimezone, replace_existing=True)
+    #sched.add_job(bot_main, 'cron', ['get_power_rankings'], id='power_rankings',
+        #day_of_week='tue', hour=18, minute=30, start_date=ff_start_date, end_date=ff_end_date,
+        #timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['get_matchups'], id='matchups',
         day_of_week='thu', hour=18, minute=30, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
-    sched.add_job(bot_main, 'cron', ['get_close_scores'], id='close_scores',
-        day_of_week='mon', hour=18, minute=30, start_date=ff_start_date, end_date=ff_end_date,
-        timezone=myTimezone, replace_existing=True)
-    sched.add_job(bot_main, 'cron', ['get_final'], id='final',
-        day_of_week='tue', hour=7, minute=30, start_date=ff_start_date, end_date=ff_end_date,
-        timezone=myTimezone, replace_existing=True)
-    sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard1',
-        day_of_week='fri,mon', hour=7, minute=30, start_date=ff_start_date, end_date=ff_end_date,
-        timezone=myTimezone, replace_existing=True)
-    sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard2',
-        day_of_week='sun', hour='16,19', start_date=ff_start_date, end_date=ff_end_date,
-        timezone=myTimezone, replace_existing=True)
+    #sched.add_job(bot_main, 'cron', ['get_close_scores'], id='close_scores',
+       # day_of_week='mon', hour=18, minute=30, start_date=ff_start_date, end_date=ff_end_date,
+        #timezone=myTimezone, replace_existing=True)
+  #  sched.add_job(bot_main, 'cron', ['get_final'], id='final',
+        #day_of_week='tue', hour=7, minute=30, start_date=ff_start_date, end_date=ff_end_date,
+        #timezone=myTimezone, replace_existing=True)
+    #sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard1',
+      #  day_of_week='fri,mon', hour=7, minute=30, start_date=ff_start_date, end_date=ff_end_date,
+       # timezone=myTimezone, replace_existing=True)
+    #sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard2',
+      #  day_of_week='sun', hour='16,19', start_date=ff_start_date, end_date=ff_end_date,
+        #timezone=myTimezone, replace_existing=True)
 
 sched.start()
