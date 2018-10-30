@@ -122,8 +122,8 @@ def get_scoreboard_short(league, final=False):
         matchups = league.scoreboard()
     else:
         matchups = league.scoreboard(week=pranks_week(league))
-    score = ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
-             i.away_score, i.away_team.owner) for i in matchups
+    score = ['%s %.2f - %.2f %s' % (i.away_team.owner, i.away_score,
+             i.home_score, i.home_team.owner) for i in matchups
              if i.away_team]
     text = ['Score Update'] + score
     return '\n'.join(text)
@@ -131,8 +131,8 @@ def get_scoreboard_short(league, final=False):
 def get_scoreboard(league):
     #Gets current week's scoreboard
     matchups = league.scoreboard()
-    score = ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
-             i.away_score, i.away_team.owner) for i in matchups
+    score = ['%s %.2f - %.2f %s' % (i.away_team.owner, i.away_score,
+             i.home_score, i.home_team.owner) for i in matchups
              if i.away_team]
     text = ['Score Update'] + score
     return '\n'.join(text)
@@ -149,8 +149,8 @@ def get_matchups(league):
     
     matchups = league.scoreboard()
 
-    score = ['%s(%s-%s) vs %s(%s-%s)' % (i.home_team.owner, i.home_team.wins, i.home_team.losses,
-             i.away_team.owner, i.away_team.wins, i.away_team.losses) for i in matchups
+    score = ['%s(%s-%s) vs %s(%s-%s)' % (i.away_team.owner, i.away_team.wins, i.away_team.losses,
+                                         i.home_team.owner, i.home_team.wins, i.home_team.losses) for i in matchups
              if i.away_team]
     text = ['This Week\'s Matchups'] + score + ['\n'] + league_url
     return '\n'.join(text)
@@ -164,8 +164,8 @@ def get_close_scores(league):
         if i.away_team:
             diffScore = i.away_score - i.home_score
             if -16 < diffScore < 16:
-                score += ['%s %.2f - %.2f %s' % (i.home_team.owner, i.home_score,
-                        i.away_score, i.away_team.owner)]
+                score += ['%s %.2f - %.2f %s' % (i.away_team.owner, i.away_score,
+                        i.home_score, i.home_team.owner)]
     if not score:
         score = ['None']
     text = ['Close Scores'] + score
@@ -225,7 +225,7 @@ def get_trophies(league):
             else:
                 ownerer_team_name = i.away_team.owner
                 blown_out_team_name = i.home_team.owner
-    if league.league_id==81396:
+    if int(league.league_id)==81396:
         low_score_str = ['Biggest Loser of the Week: %s with %.2f points' % (low_team_name, low_score)]
         high_score_str = ['Super Winner of the Week: %s with %.2f points' % (high_team_name, high_score)]
     else:
@@ -240,7 +240,7 @@ def get_trophies(league):
 
 def bot_main(function):
     try:
-        bot_id = os.environ["BOT_ID"]
+        bot_id = os.environ["BOT_ID"]        
     except KeyError:
         bot_id = 1
 
@@ -255,7 +255,7 @@ def bot_main(function):
         discord_webhook_url = 1
 
     league_id = os.environ["LEAGUE_ID"]
-
+    
     try:
         year = os.environ["LEAGUE_YEAR"]
     except KeyError:
@@ -266,7 +266,7 @@ def bot_main(function):
     discord_bot = DiscordBot(discord_webhook_url)
     league = League(league_id, year)
    
-    test = False
+    test = True
     if test:
         print(get_matchups(league))
         print(get_scoreboard(league))
@@ -381,4 +381,4 @@ if __name__ == '__main__':
         day_of_week='sun', hour='16,19', start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
 
-    sched.start()
+sched.start()
